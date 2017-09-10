@@ -1,0 +1,15 @@
+{% if flash.getMessage('error') %}
+<section class="message error">
+	<div class="container">
+    	{{ flash.getMessage('error') | first }}
+    </div>
+</section>
+{% endif %}
+
+{% if flash.getMessage('info') %}
+<section class="message">
+	<div class="container">
+    	{{ flash.getMessage('info') | first }}
+    </div>
+</section>
+{% endif %}

@@ -1,0 +1,114 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Ajouter une mission{% endblock %}
+
+{% block bodyClass %}submit-footer{% endblock %}
+
+{% block content %}
+	<header>
+		<a href="{{ path_for('admin.jobs') }}" class="button-back">Retour</a>
+		<h1>Ajouter une mission</h1>
+	</header>
+
+
+<form method="POST" action="{{ path_for('admin.job.new') }}" accept-charset="UTF-8" autocomplete="off">
+	<section class="formSection">
+			<div class="form--inputs">
+				<div class="form--input">
+					<label for="name">Intitulé de mission</label>
+					<input id="name" required="required" name="name" type="text" max="50" value="{{ old.name }}">
+					{% if errors.name %}
+	                <span class="help-block">{{errors.name | first}}</span>
+	                {% endif %}
+				</div>
+				<div class="form--input">
+					<label for="excerpt">Résumé de la mission (<span id="remaining">200</span>/200 caractères restants)</label>
+					<textarea id="excerpt" required="required" name="excerpt" type="text" max="200" onKeyUp="textCounter(this,'remaining' ,200)">{{ old.excerpt }}</textarea>
+					{% if errors.excerpt %}
+	                <span class="help-block">{{errors.excerpt | first}}</span>
+	                {% endif %}
+				</div>
+				<div class="form--textarea">
+					<label for="text">Descriptif de la mission</label>	
+<textarea name="text" id="text">
+{%if old.text%}
+{{ old.text }}
+{% else %}
+**Exemple de présentation**
+
+Description du poste.
+
+###Profil recherché :
+
+* Anglais / français courant (écrit &amp; oral)
+* Master Finance
+
+###Les plus :
+
+* Stage en cabinet d'audit
+* Espagnol courant (ecrit &amp; oral)
+{% endif %}
+</textarea>
+					{% if errors.text %}
+	                <span class="help-block">{{errors.text | first}}</span>
+	                {% endif %}
+				</div>
+				<div class="form--input">
+					<label for="start">Début de mission</label>
+					<input id="start" required="required" name="start" type="date" value="{{ old.start }}">
+					{% if errors.start %}
+	                <span class="help-block">{{errors.start | first}}</span>
+	                {% endif %}
+				</div>
+				<div class="form--input">
+					<label for="finish">Fin de mission</label>
+					<input id="finish" required="required" name="finish" type="date" value="{{ old.finish }}">
+					{% if errors.finish %}
+	                <span class="help-block">{{errors.finish | first}}</span>
+	                {% endif %}
+				</div>
+				<div class="form--input">
+					<label for="salary">Rémunération</label>
+					<input id="salary" required="required" name="salary" type="number" min="0" value="{{ old.salary }}">
+					{% if errors.salary %}
+	                <span class="help-block">{{errors.salary | first}}</span>
+	                {% endif %}
+				</div>
+				<div class="form--input">
+					<label for="deadline">Deadline des candidature</label>
+					<input id="deadline" required="required" name="deadline" type="date" value="{{ old.deadline }}">
+					{% if errors.deadline %}
+	                <span class="help-block">{{errors.text | first}}</span>
+	                {% endif %}
+				</div>
+				<div class="form--input">
+					<label for="level">Niveau minimum requis</label>
+					<select name="level" id="level">
+						<option value="B1">B1</option>
+						<option value="B2">B2</option>
+						<option value="B3">B3</option>
+						<option value="Master">Master</option>
+					</select>
+				</div>
+			</div>
+	</section>
+	<footer>
+		{{ csrf.field | raw }}
+		<input id="submit" class="white" type="submit" value="Ajouter la mission">
+	</footer>
+{% endblock %}
+
+{%block script %}
+<link rel="stylesheet" href="{{ baseUrl }}/assets/css/mdeditor.css">
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="{{ baseUrl }}/assets/js/mdeditor.min.js"></script>
+<script>
+
+	var md = new MdEditor('#text', {
+	uploader: "{{ baseUrl }}",
+	preview: true,
+	images: [
+	]
+	});
+</script>
+{% endblock %}

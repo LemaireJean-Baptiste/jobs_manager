@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Recrutement{% endblock %}
+
+{% block bodyClass %}recruits{% endblock %}
+
+{% block content %}
+
+
+{% set admin = auth.check(true) %}
+
+<div class="jobs">
+{% if recruits|length > 0 %}
+	
+	<div class="box-details">
+		<p>{{ details.text }}</p>
+	</div>
+
+	{% for recruit in recruits %}<div class="job">
+		{% if admin %}
+			<a href="{{ path_for('admin.recruit.update', {'id': recruit.id}) }}" class="job-admin-link"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+		{% endif %}
+		<div class="job-text">
+			<h2 class="job-title"><a href="{{ path_for('job', {'id': job.id}) }}">{{ recruit.name | raw }}</a></h2>
+			<p class="job-description">
+				{{ recruit.excerpt | raw  }} 
+			</p>
+		</div>
+		<div class="job-details">
+			<span class="job-detail">{%if recruit.number > 1%}{{ recruit.number }} postes ouverts{% else %}{{ recruit.number }} poste ouvert{% endif %}</span>
+			<a href="{{ path_for('recruit', {'id': recruit.id}) }}" class="button blue">plus d'infos</a>
+		</div>
+	</div>{% endfor %}
+{% else %}
+	<p>La session de recrutement n'est pas encore ouverte. Vous pouvez néammoins postuler à nos mission <a href="{{ path_for('jobs') }}">ici</a></p>
+	<p><a href="http://facebook.com">Likez notre page facebook</a> pour vous tenir au courant de nos prochaines session de recrutement.</p>
+{% endif %}
+</div>
+
+{% endblock %}
+
+{%block script %}
+	<script>
+
+		function toggleAct(balise) {
+			if (balise.classList.contains('active')) {
+				balise.classList.remove('active');
+			} else {
+				balise.classList.add('active');
+			}
+		}
+
+		function initiateToggle(toggle, balise){
+			for (var i = 0; i < toggle.length; i++) {
+			    toggle[i].addEventListener('click', function(){toggleAct(balise)}, false);
+			}
+		}
+
+		var toggleMenu = document.getElementsByClassName("toggle");
+		var baliseMenu = document.getElementById('body');
+
+		initiateToggle(toggleMenu, baliseMenu);
+
+		var toggleLetter = document.getElementsByClassName("toggleLetter");
+		var baliseLetter = document.getElementById('mc_embed_signup');
+
+		initiateToggle(toggleLetter, baliseLetter);
+
+	</script>
+{% endblock %}

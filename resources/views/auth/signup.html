@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Sign Up{% endblock %}
+
+{% block content %}
+
+<div class="warp-center">
+    <div class="box-form">
+        <form action="{{path_for('auth.signup')}}" method="post" autocomplete="off">
+        <h2>Sign Up</h2>
+        
+        <div class="inputs-inline">
+            <div class="input">
+                <label for="fname">First Name</label>
+                <input type="text" id="fname" placeholder="first name" name="fname" value="{{ old.fname }}">
+                {% if errors.fname %}
+                <span class="help-block">{{errors.fname | first}}</span>
+                {% endif %}
+            </div><div class="input">
+                <label for="lname">Last Name</label>
+                <input type="text" id="lname" placeholder="last name" name="lname" value="{{ old.lname }}">
+                {% if errors.lname %}
+                <span class="help-block">{{errors.lname | first}}</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="input">
+            <label for="email">Email address</label>
+            <input type="text" id="email" placeholder="email" name="email" value="{{ old.email }}">
+            {% if errors.email %}
+            <span class="help-block">{{errors.email | first}}</span>
+            {% endif %}
+        </div>
+
+        <div class="input">
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="password" name="password" >
+            {% if errors.password %}
+            <span class="help-block">{{errors.password | first}}</span>
+            {% endif %}
+        </div>
+        
+        {{ csrf.field | raw }}
+        <input type="submit" class="btn btn-default" value="Sign Up">
+    </div>
+
+</div>
+
+{% endblock %}

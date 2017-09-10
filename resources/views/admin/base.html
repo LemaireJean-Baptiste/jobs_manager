@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta charset="UTF-8">
+	<title>{% block title %}{% endblock %} | Administration</title>
+	<!-- plugin's css -->
+
+	<link rel="stylesheet" href="{{ baseUrl }}/assets/css/normalize.css">
+	<!-- personal css -->
+	<link rel="stylesheet" href="{{ baseUrl }}/assets/css/admin.css">
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
+	<link rel="icon" type="image/png" href="{{ baseUrl }}/assets/images/favicon.png">
+</head>
+<body class="{% block bodyClass %}{% endblock %} admin">
+	<section class="sidebar">
+		<div class="header--title">
+			<a href="{{ path_for('admin') }}" >{{ auth.user.fname }}</a>
+			<a href="{{ path_for('home') }}" title="voir le site" class="viewSite">&#8962;</a>
+		</div>
+		{% block menu %}			
+		<ul>
+			<li class="sidebar--title"><a href="#" class="sidebar--title--link">Missions</a></li>
+			<li class="sidebar--link"><a href="{{ path_for('admin.jobs') }}">Liste</a></li>
+			<li class="sidebar--link"><a href="{{ path_for('admin.job.new') }}">Ajouter</a></li>
+		</ul>
+		<ul class="hide">
+			<li class="sidebar--title"><a href="#" class="sidebar--title--link">Recrutement</a></li>
+			<li class="sidebar--link"><a href="{{ path_for('admin.recruits') }}">Liste</a></li>
+			<li class="sidebar--link"><a href="{{ path_for('admin.recruit.new') }}">Ajouter</a></li>
+		</ul>
+		<ul class="hide">
+			<li class="sidebar--title"><a href="#" class="sidebar--title--link">Étudiants</a></li>
+			<li class="sidebar--link"><a href="{{ path_for('admin.users') }}">Liste</a></li>
+		</ul>
+		{% endblock %}
+		<a href="{{path_for('auth.signout') }}" class="sidebar--logout">Se déconnecter</a>
+		<a href="#" class="sidebar--opener"><span class="sidebar--opener--arrow">&#9654;</span></a>
+		<a href="#" class="sidebar--closer"><span class="sidebar--closer--arrow">&#9664;</span> Cacher le menu</a>
+	</section>
+	<section class="content dashcontent">
+
+	{% include 'partials/flashadmin.html' %}
+
+	{% block content%} {% endblock %}
+	</section>
+
+	<script src="{{ baseUrl }}/assets/js/admin.js"></script>
+	{% block script %} {% endblock %}
+</body>
+</html>

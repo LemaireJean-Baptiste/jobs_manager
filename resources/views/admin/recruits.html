@@ -1,0 +1,120 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Fiches de postes{% endblock %}
+
+{% block bodyClass %}page{% endblock %}
+
+{% block menu %}			
+	<ul class="hide">
+		<li class="sidebar--title"><a href="#" class="sidebar--title--link">Missions</a></li>
+		<li class="sidebar--link"><a href="{{ path_for('admin.jobs') }}">Liste</a></li>
+		<li class="sidebar--link"><a href="{{ path_for('admin.job.new') }}">Ajouter</a></li>
+	</ul>
+	<ul>
+		<li class="sidebar--title"><a href="#" class="sidebar--title--link">Recrutement</a></li>
+		<li class="sidebar--link"><a href="{{ path_for('admin.recruits') }}">Liste</a></li>
+		<li class="sidebar--link"><a href="{{ path_for('admin.recruit.new') }}">Ajouter</a></li>
+	</ul>
+	<ul class="hide">
+		<li class="sidebar--title"><a href="#" class="sidebar--title--link">Étudiants</a></li>
+		<li class="sidebar--link"><a href="{{ path_for('admin.users') }}">Liste</a></li>
+	</ul>
+{% endblock %}
+
+{% block content %}
+		
+		<header>
+			<h1>Fiches de postes</h1>
+			<a href="{{ path_for('admin.recruit.new') }}" class="button">Ajouter</a>
+		</header>
+
+	<section class="dashpadding">
+	<form action="{{ path_for('admin.recruit_details') }}" class="box-details fix-height" method="post">
+		<h3>Détails de la campagne de recrutement</h3>
+		<a href="#" onclick="toggleClass(event,this,'hide')" class="box-details-closer">-</a>
+		{% set remaining = 500- recruit_details.text | length %}
+		<div class="form--inputs">
+		<label for="text">Présentation de la campagne (<span id="remaining">{{ remaining }}</span>/500 caractères restants)</label>
+		<textarea id="text" required="required" name="text" type="text" max="500" onKeyUp="textCounter(this,'remaining' ,500)">{{ recruit_details.text | raw }}</textarea>
+		</div>
+		<div class="form--inputs ta-right">
+		<div class="input">
+			<label for="deadline">Deadline des candidature</label>
+			<input id="deadline" required="required" name="deadline" type="date" value="{{ recruit_details.deadline|date_modify("-1 day")|date("Y-m-d") }}">
+		</div>
+		<label for="status" class="switch {% if recruit_details.status %} checked {% endif %}"><input type="checkbox" {% if recruit_details.status %} checked {% endif %} onchange="toggleSwitch(this, 'checked');" name="status"></label>
+		<span>publier la campagne</span>
+		
+		<input type="submit" value="Mettre à jour" class="white">
+		</div>
+		{{ csrf.field | raw }}
+	</form>
+
+	{% if recruits %}
+
+		<table class="admin--table">
+			<thead>
+				<tr>
+					<th>Titre du poste</th>
+					<th>Description</th>
+					<th>Nb</th>
+					<th>Statut</th>
+					<th>Action</th>
+				</tr>
+			</thead>
+			{% if jobs|length> 10 %}
+			<tfoot>
+				<tr>
+					<th>Titre du poste</th>
+					<th>Description</th>
+					<th>Nb</th>
+					<th>Statut</th>
+					<th>Action</th>
+				</tr>
+			</tfoot>
+			{% endif %}
+			<tbody>
+			{% for recruit in recruits %}
+				<tr id="ref{{ recruit.id }}" class="admin--table--item" >
+					<td class="admin--table--item--bold"><a href="{{ path_for('admin.recruit.update', {'id': recruit.id}) }}">{{ recruit.name | raw }}</a></td>
+					<td class="admin--table--item--link"><a href="{{ path_for('admin.recruit.update', {'id': recruit.id}) }}">{{ recruit.excerpt | excerpt(30) }}</a></td>
+					<td class="admin--table--item--link"><a href="{{ path_for('admin.recruit.update', {'id': recruit.id}) }}">{{ recruit.number | raw }}</a></td>
+					<td class="admin--table--item--link">
+						<form action="{{ path_for('admin.recruit.changeStatus', {'id': recruit.id}) }}" method="POST" class="toggle-btn-holder">
+							{% if recruit.status == 1 %}
+								<input type="hidden" value="0" name="status">
+								<input type="submit" class="toggle-btn checked" value="masquer la fiche de poste" onclick="return confirm('Voulez-vous vraiment masquer la fiche de poste ?')">
+								<span class="toggle-btn-dot checked"></span> Publié
+							{% else %}
+								<input type="hidden" value="1" name="status">
+								<input type="submit" class="toggle-btn" value="publier la fiche de poste" onclick="return confirm('Voulez-vous vraiment publié la fiche de poste ?')">
+								<span class="toggle-btn-dot"></span> Masqué
+							{% endif %}
+							{{ csrf.field | raw }}
+						</form>
+					</td>
+					<td class="admin--table--item--btns">
+						<a href="{{ path_for('admin.recruit.update', {'id': recruit.id}) }}" class="button">Modifier</a>
+						<form action="{{ path_for('admin.recruit.delete', {'id': recruit.id}) }}" method="POST">
+							<input name="_METHOD" type="hidden" value="DELETE">
+							<input type="submit" value="Supprimer" class="red" onclick="return confirm('Voulez-vous vraiment supprimer cette fiche de poste ?')">
+							{{ csrf.field | raw }}
+						</form>
+					</td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+
+	{% else %}
+		<p class="nothingToShow">Aucune mission à afficher. <a href="{{ path_for('admin.recruit.new') }}">Cliquez ici pour en ajouter une.</a></p>
+
+	{% endif %}
+	</section>
+
+
+{% endblock %}
+
+{%block script %}
+
+{% endblock %}

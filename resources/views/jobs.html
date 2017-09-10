@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Missions{% endblock %}
+
+{% block content %}
+
+<div class="search">
+	<!--div class="search-input">
+		<i class="fa fa-search" aria-hidden="true"></i><input placeholder="Rechercher une mission" type="text">
+	</div-->
+	<div class="level">
+		<span class="selects-label">Afficher par niveau <i class="question">?</i><i class="hover-box">Il s'agit de niveau requis. ex: Si vous êtes en B3 vous pouvez postuler aux offres B1, B2 et B3.</i></span>
+		<ul class="selects">
+			<li class="select{% if level == null %} active{% endif %}"><a href="{{ path_for('jobs') }}" >Tous</a></li>
+			<li class="select{% if (level == 'B1' or level == 'B2' or level == 'B3' or level == 'Master') %} active{% endif %}"><a href="{{ path_for('jobs', {'level': "B1"}) }}" >B1</a></li>
+			<li class="select{% if (level == 'B2' or level == 'B3' or level == 'Master') %} active{% endif %}"><a href="{{ path_for('jobs', {'level': "B2"}) }}" >B2</a></li>
+			<li class="select{% if (level == 'B3' or level == 'Master') %} active{% endif %}"><a href="{{ path_for('jobs', {'level': "B3"}) }}" >B3</a></li>
+			<li class="select{% if level == 'Master' %} active{% endif %}"><a href="{{ path_for('jobs', {'level': "Master"}) }}" >Master</a></li>
+		</ul>
+	</div>
+</div>
+
+
+{% set admin = auth.check(true) %}
+
+<div class="jobs">
+{% if jobs|length > 0 %}
+	{% for job in jobs %}<div class="job">
+		{% if admin %}
+			<a href="{{ path_for('admin.job.update', {'id': job.id}) }}" class="job-admin-link"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+		{% endif %}
+		<div class="job-text">
+			<h2 class="job-title"><a href="{{ path_for('job', {'id': job.id}) }}">{{ job.name | raw }}</a></h2>
+			<p class="job-description">
+				{{ job.excerpt | raw  }} 
+			</p>
+		</div>
+		<div class="job-details">
+			<span class="job-detail"><i class="fa fa-calendar-o" aria-hidden="true"></i> {{ job.start | duration(job.finish)}} <i class="hover-box" aria-hidden="true">durée</i></span>
+			<span class="job-detail"><i class="fa fa-money" aria-hidden="true"></i> {{ job.salary }} € <i class="hover-box" aria-hidden="true">rémunération</i></span>
+			<span class="job-detail label">{{ job.level }} <i class="hover-box" aria-hidden="true">niveau requis</i></span>
+			<a href="{{ path_for('job', {'id': job.id}) }}" class="button blue">plus d'infos</a>
+		</div>
+	</div>{% endfor %}
+{% elseif level != null %}
+	<p>Il n'y a pas de mission à pourvoir dans ce niveau spécifique. <a href="{{ path_for('jobs') }}">Afficher tout les niveaux.</a></p>
+	<p><a href="http://facebook.com">Likez notre page facebook de recrutement</a> pour vous tenir au courant des prochaines missions.</p>
+{% else %}
+	<p>Il n'y a pas de mission à pourvoir pour le moment. Revenez vite pour découvrir nos prochaines missions. </p>
+	<p><a href="http://facebook.com">Likez notre page facebook de recrutement</a> pour vous tenir au courant des prochaines missions.</p>
+{% endif %}
+</div>
+
+{% endblock %}
+
+{%block script %}
+	<script>
+
+		function toggleAct(balise) {
+			if (balise.classList.contains('active')) {
+				balise.classList.remove('active');
+			} else {
+				balise.classList.add('active');
+			}
+		}
+
+		function initiateToggle(toggle, balise){
+			for (var i = 0; i < toggle.length; i++) {
+			    toggle[i].addEventListener('click', function(){toggleAct(balise)}, false);
+			}
+		}
+
+		var toggleMenu = document.getElementsByClassName("toggle");
+		var baliseMenu = document.getElementById('body');
+
+		initiateToggle(toggleMenu, baliseMenu);
+
+		var toggleLetter = document.getElementsByClassName("toggleLetter");
+		var baliseLetter = document.getElementById('mc_embed_signup');
+
+		initiateToggle(toggleLetter, baliseLetter);
+
+	</script>
+{% endblock %}

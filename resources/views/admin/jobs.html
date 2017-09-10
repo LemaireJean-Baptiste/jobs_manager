@@ -1,0 +1,69 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Missions{% endblock %}
+
+{% block bodyClass %}page{% endblock %}
+
+{% block content %}
+		
+		<header>
+			<h1>Missions</h1>
+			<a href="{{ path_for('admin.job.new') }}" class="button">Ajouter</a>
+		</header>
+
+	<section class="dashpadding">
+	{% if jobs %}
+
+		<table class="admin--table">
+			<thead>
+				<tr>
+					<th>Titre de la mission</th>
+					<th>Rémunération</th>
+					<th>Niveau</th>
+					<th>Deadline</th>
+					<th>Action</th>
+				</tr>
+			</thead>
+			{% if jobs|length> 10 %}
+			<tfoot>
+				<tr>
+					<th>Titre de la mission</th>
+					<th>Rémunération</th>
+					<th>Niveau</th>
+					<th>Deadline</th>
+					<th>Action</th>
+				</tr>
+			</tfoot>
+			{% endif %}
+			<tbody>
+			{% for job in jobs %}
+				<tr id="ref{{ job.id }}" class="admin--table--item" >
+					<td class="admin--table--item--bold"><a href="{{ path_for('admin.job.update', {'id': job.id}) }}">{{ job.name | raw }}</a></td>
+					<td class="admin--table--item--link"><a href="{{ path_for('admin.job.update', {'id': job.id}) }}">{{ job.salary | raw }} €</a></td>
+					<td class="admin--table--item--link"><a href="{{ path_for('admin.job.update', {'id': job.id}) }}">{{ job.level | raw }}</a></td>
+					<td class="admin--table--item--link"><a href="{{ path_for('admin.job.update', {'id': job.id}) }}">{{ job.deadline | date("d/m/Y") }}</a></td>
+					<td class="admin--table--item--btns">
+						<a href="{{ path_for('admin.job.update', {'id': job.id}) }}" class="button">Modifier</a>
+						<form action="{{ path_for('admin.job.delete', {'id': job.id}) }}" method="POST">
+							<input name="_METHOD" type="hidden" value="DELETE">
+							<input type="submit" value="Supprimer" class="red" onclick="return confirm('Voulez-vous vraiment supprimer cette mission ?')">
+							{{ csrf.field | raw }}
+						</form>
+					</td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+
+	{% else %}
+		<p class="nothingToShow">Aucune mission à afficher. <a href="{{ path_for('admin.job.new') }}">Cliquez ici pour en ajouter une.</a></p>
+
+	{% endif %}
+	</section>
+
+
+{% endblock %}
+
+{%block script %}
+
+{% endblock %}

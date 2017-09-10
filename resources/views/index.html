@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+	<title>IESEG Conseil Jobs</title>
+	<link rel="stylesheet" href="{{ baseUrl }}/assets/css/app.css">
+	<link rel="stylesheet" href="{{ baseUrl }}/assets/css/normalize.css">
+</head>
+<body class="home">
+<div class="warp">
+	<header>
+		<div class="logo"><a href="http://iesegconseil.fr" title="retour au site IESEG Conseil"><img src="{{ baseUrl }}/assets/img/logo_white.png" alt="IESEG CONSEIL"></a> <!--a href="{{ path_for('home') }}" class="subtitle" title="retour à l'accueil de IESEG Conseil JOBS">JOBS</a--></div>
+	</header>
+	{% if auth.check %}
+		<p class="welcome">Bienvenue {{ auth.user.fname }} !</p>
+	{% endif %}
+</div>
+<div class="warp big">
+	{% spaceless %}
+	{% if number.job > 0 %} 
+	<div class="big-link left">
+		{% if  number.job > 1 %} 
+		<a href="{{ path_for('jobs') }}"><span>{{ number.job }}</span> missions en cours</a>
+		{% else %}
+		<a href="{{ path_for('jobs') }}"><span>{{ number.job }}</span> mission en cours</a>
+		{% endif %}
+	</div>
+	{% endif %}
+
+	{% if number.recruit > 0 %}
+	<div class="big-link">
+		{% if  number.recruit > 1 %} 
+		<a href="{{ path_for('recruits') }}"><span>{{ number.recruit }}</span> postes d'administrateurs ouverts</a>
+		{% else %}
+		<a href="{{ path_for('recruits') }}"><span>{{ number.recruit }}</span> poste d'administrateur ouvert></a>
+		{% endif %}
+	</div>
+	{% endif %}
+</div>
+<div class="warp">
+	{% if auth.check %}
+	<div class="cta">
+		{% if auth.check(true) %}
+		<a href="{{path_for('admin') }}" class="button white left">Administration</a>
+		{% endif %}
+    	<a href="{{path_for('auth.signout') }}" class="button white left">Sign out</a>
+    </div>
+	{% else %}
+	<div class="cta">
+    	<a href="{{path_for('auth.signup') }}" class="button white left">Sign up</a><a href="{{path_for('auth.signin') }}" class="button white">Sign in</a>
+    </div>
+    {% endif %}
+</div>
+	{% endspaceless %}
+
+</div>
+
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700,800" rel="stylesheet">
+<script src="https://use.fontawesome.com/ad8f656abe.js"></script>
+</body>
+</html>

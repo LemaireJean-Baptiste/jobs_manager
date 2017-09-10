@@ -1,0 +1,95 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Étudiants{% endblock %}
+
+{% block bodyClass %}page{% endblock %}
+
+{% block menu %}			
+	<ul class="hide">
+		<li class="sidebar--title"><a href="#" class="sidebar--title--link">Missions</a></li>
+		<li class="sidebar--link"><a href="{{ path_for('admin.jobs') }}">Liste</a></li>
+		<li class="sidebar--link"><a href="{{ path_for('admin.job.new') }}">Ajouter</a></li>
+	</ul>
+	<ul class="hide">
+		<li class="sidebar--title"><a href="#" class="sidebar--title--link">Recrutement</a></li>
+		<li class="sidebar--link"><a href="{{ path_for('admin.recruits') }}">Liste</a></li>
+		<li class="sidebar--link"><a href="{{ path_for('admin.recruit.new') }}">Ajouter</a></li>
+	</ul>
+	<ul>
+		<li class="sidebar--title"><a href="#" class="sidebar--title--link">Étudiants</a></li>
+		<li class="sidebar--link"><a href="{{ path_for('admin.users') }}">Liste</a></li>
+	</ul>
+{% endblock %}
+
+{% block content %}
+		
+		<header>
+			<h1>Étudiants</h1>
+		</header>
+
+	<section class="dashpadding">
+	{% if users %}
+
+		<table class="admin--table">
+			<thead>
+				<tr>
+					<th>Nom</th>
+					<th>Email</th>
+					<th>Administrateur</th>
+					<th>Action</th>
+				</tr>
+			</thead>
+			{% if users|length> 10 %}
+			<tfoot>
+				<tr>
+					<th>Nom</th>
+					<th>Email</th>
+					<th>Administrateur</th>
+					<th>Action</th>
+				</tr>
+			</tfoot>
+			{% endif %}
+			<tbody>
+			{% for user in users %}
+				<tr id="ref{{ user.id }}" class="admin--table--item" >
+					<td class="admin--table--item--bold"><a href="{{ path_for('admin.user.update', {'id': user.id}) }}">{{ user.fname | raw }} {{ user.lname | upper | raw }}</a></td>
+					<td class="admin--table--item--link"><a href="{{ path_for('admin.user.update', {'id': user.id}) }}">{{ user.email | raw }}</a></td>
+					<td class="admin--table--item--link">
+						<form action="{{ path_for('admin.user.changePermission', {'id': user.id}) }}" method="POST" class="toggle-btn-holder">
+							{% if user.permission == "admin" %}
+								<input type="hidden" value="member" name="permission">
+								<input type="submit" class="toggle-btn checked" value="passer en membre" onclick="return confirm('Voulez-vous vraiment supprimer les droits administrateurs à cet utilisateur ?')">
+								<span class="toggle-btn-dot checked"></span> Administrateur
+							{% else %}
+								<input type="hidden" value="admin" name="permission">
+								<input type="submit" class="toggle-btn" value="passer en administrateur" onclick="return confirm('Voulez-vous vraiment accorder les droits administrateurs à cet utilisateur ? Attention, en faisant cela, il sera capable de modifier l\'intégralité du site !')">
+								<span class="toggle-btn-dot"></span> Membre
+							{% endif %}
+							{{ csrf.field | raw }}
+						</form>
+					</td>
+					<td class="admin--table--item--btns">
+						<a href="{{ path_for('admin.user.update', {'id': user.id}) }}" class="button">Modifier</a>
+						<form action="{{ path_for('admin.user.delete', {'id': user.id}) }}" method="POST">
+							<input name="_METHOD" type="hidden" value="DELETE">
+							<input type="submit" value="Supprimer" class="red" onclick="return confirm('Voulez-vous vraiment supprimer cette mission ?')">
+							{{ csrf.field | raw }}
+						</form>
+					</td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+
+	{% else %}
+		<p class="nothingToShow">Aucun utilisateurs à afficher.</p>
+
+	{% endif %}
+	</section>
+
+
+{% endblock %}
+
+{%block script %}
+
+{% endblock %}

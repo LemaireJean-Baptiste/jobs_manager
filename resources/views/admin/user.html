@@ -1,0 +1,91 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Mettre à jour : {{ user.fname }} {{ user.lname | upper }}{% endblock %}
+
+{% block bodyClass %}submit-footer{% endblock %}
+
+{% block menu %}			
+	<ul class="hide">
+		<li class="sidebar--title"><a href="#" class="sidebar--title--link">Missions</a></li>
+		<li class="sidebar--link"><a href="{{ path_for('admin.jobs') }}">Liste</a></li>
+		<li class="sidebar--link"><a href="{{ path_for('admin.job.new') }}">Ajouter</a></li>
+	</ul>
+	<ul class="hide">
+		<li class="sidebar--title"><a href="#" class="sidebar--title--link">Recrutement</a></li>
+		<li class="sidebar--link"><a href="{{ path_for('admin.recruits') }}">Liste</a></li>
+		<li class="sidebar--link"><a href="{{ path_for('admin.recruit.new') }}">Ajouter</a></li>
+	</ul>
+	<ul>
+		<li class="sidebar--title"><a href="#" class="sidebar--title--link">Étudiants</a></li>
+		<li class="sidebar--link"><a href="{{ path_for('admin.users') }}">Liste</a></li>
+	</ul>
+{% endblock %}
+
+{% block content %}
+	<header>
+		<a href="{{ path_for('admin.users') }}" class="button-back">Retour</a>
+		<h1>{{ user.fname }} {{ user.lname | upper }}</h1>
+		<form action="{{ path_for('admin.user.delete', {'id': user.id}) }}" method="POST">
+			<input name="_METHOD" type="hidden" value="DELETE">
+			<input type="submit" value="Supprimer" class="red" onclick="return confirm('Voulez-vous vraiment supprimer le compte de cet étudiant?')">
+		</form>
+	</header>
+
+
+<form method="POST" action="{{ path_for('admin.user.update', {'id': user.id}) }}" accept-charset="UTF-8" autocomplete="off">
+	<section class="formSection">
+			<div class="form--inputs">
+				<div class="form--input">
+					<label for="fname">Prénom</label>
+					<input id="fname" required="required" name="fname" type="text" max="50" value="{{ user.fname | raw  }}">
+					{% if errors.fname %}
+			            <span class="help-block">{{errors.fname | first}}</span>
+			        {% endif %}
+				</div>
+				<div class="form--input">
+					<label for="lname">Nom</label>
+					<input id="lname" required="required" name="lname" type="text" max="50" value="{{ user.lname | raw  }}">
+					{% if errors.lname %}
+			            <span class="help-block">{{errors.lname | first}}</span>
+			        {% endif %}
+				</div>
+				<div class="form--input">
+					<label for="email">Email</label>
+					<input id="email" required="required" name="email" type="text" max="50" value="{{ user.email | raw  }}">
+					{% if errors.email %}
+			            <span class="help-block">{{errors.email | first}}</span>
+			        {% endif %}
+				</div>
+				<div class="form--input">
+					<label for="permission">Niveau de permission</label>
+					<select name="permission" id="permission">
+						<option value="member" {% if user.permission == "member" %} selected="selected" {% endif %}>Member</option>
+						<option value="admin" {% if user.permission == "B2+" %} selected="selected" {% endif %}>Administrateur</option>
+					</select>
+					{% if errors.permission %}
+			            <span class="help-block">{{errors.permission | first}}</span>
+			        {% endif %}
+				</div>
+			</div>
+	</section>
+	<footer>
+		{{ csrf.field | raw }}
+		<input id="submit" class="white" type="submit" value="Mettre à jour la mission">
+	</footer>
+	</form>
+{% endblock %}
+
+{%block script %}
+<link rel="stylesheet" href="{{ baseUrl }}/assets/css/mdeditor.css">
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="{{ baseUrl }}/assets/js/mdeditor.min.js"></script>
+<script>
+
+	var md = new MdEditor('#text', {
+	uploader: "{{ baseUrl }}",
+	preview: true,
+	images: [
+	]
+	});
+</script>
+{% endblock %}

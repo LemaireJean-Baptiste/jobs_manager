@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}{{ job.name | raw }}{% endblock %}
+
+{% block content %}
+<div class="warp-center no-margin-vert">
+		<a href="{{ path_for('jobs') }}" class="button blue back-button">Retour aux missions</a>
+</div>
+<div class="job-page warp-center">
+	<div class="job-text job">
+		<h1 class="job-title">{{ job.name | raw }}</h1>
+			{{ job.text | markdown }}
+			{% if auth.check(true) %}
+				<a href="{{ path_for('admin.job.update', {'id': job.id}) }}">Modifier la mission</a>
+			{% endif %}
+	</div>
+	{% if date(today) <= date(job.deadline) %}
+		{% if auth.check %}
+		<div class="box-form" id="candidate">
+			<form action="">
+				<h2>Postuler</h2>
+				<div class="inputs-inline">
+					<div class="input">
+						<label for="fname">Prénom</label>
+						<div class="input-fake">{{auth.user.fname | raw}}</div>
+					</div><div class="input">
+						<label for="lname">Nom</label>
+						<div class="input-fake">{{auth.user.lname | raw}}</div>
+					</div>
+				</div>
+				<div class="input">
+					<label>Adresse IESEG</label>
+					<div class="input-fake">{{ auth.user.email |raw}}</div>
+				</div>
+				<div class="inputs-inline three-quarter">
+					<div class="input">
+						<label for="nationality">Nationalité</label>
+						<input type="text" name="nationality">
+					</div><div class="input">
+						<label for="age">Age</label>
+						<input type="number" name="age" min="16" max="28" value="18">
+					</div>
+				</div>
+				<div class="input">
+					<ul class="selects">
+						<li class="select active">B1</li>
+						<li class="select">B2</li>
+						<li class="select">B3</li>
+						<li class="select">Master</li>
+					</ul>
+					<input type="hidden" value="B1" name="level" id="level">
+				</div>
+				<div class="input">
+					<label for="linkedin">Page linkedIn</label>
+					<input type="text" name="linkedin" placeholder="https://www.linkedin.com/in/name/">
+				</div>
+
+				<div class="input">
+					<label for="message">Votre motivation (300 mots max.)</label>
+					<textarea name="message"></textarea>
+				</div>
+				<input type="submit" value="envoyer votre candidature">
+			</form>
+		</div>
+		{% else %}
+		<div class="box-form" id="candidate">
+			<p><a href="{{ path_for('auth.signin') }}">Connectez-vous</a> pour postuler.</p>
+			<p>Vous n'avez pas encore de compte ? Créez en un en quelques clics <a href="{{ path_for('auth.signup') }}">ici.</a></p>
+		</div>
+		{% endif %}
+	{% else %}
+		<div class="box-form toolate" id="candidate">
+			<p>Trop tard... Les candidatures sont fermées.</p>
+			<p><a href="{{ path_for('jobs') }}">Regarder nos autres missions.</a></p>
+		</div>
+	{% endif %}
+	<div class="job-sidecontent">
+		<div class="job-details">
+			<div class="salary">{{ job.salary }} <span>€</span></div>
+			<div class="date">du <span>{{ job.start | date("d/m/y") }}</span> au <span>{{ job.finish | date("d/m/y") }}</span></div>
+			<div class="min-level"><span class="label">{{ job.level }}</span></div>
+		</div>
+		{% if date(today) <= date(job.deadline) %}
+		<div class="job-candidate">
+			<div class="day-last">{{ "now"|date("Y-m-d") | duration(job.deadline)}}</div>
+			<div class="day-last-label">restants pour postuler</div>
+			<a href="#candidate" class="button">postuler</a>
+		</div>
+		{% endif %}
+	</div>
+</div>
+
+<script>
+	var selects = document.getElementsByClassName('select');
+
+	var onClickSelect = function (){
+		
+		var num = arguments[0];
+	    var e = arguments[1];
+	    e.preventDefault();
+	    for (var i=0; i < selects.length; i++){
+	    	selects[i].classList.remove('active');
+	    }
+	    selects[num].classList.add('active');
+
+	    levelInput=document.getElementById('level');
+
+		levelInput.value=selects[num].innerHTML;
+	}
+
+	for (var i=0;i<selects.length;i++){
+	    selects[i].addEventListener('click', onClickSelect.bind(this, i), false);
+	}
+
+</script>
+{% endblock %}
